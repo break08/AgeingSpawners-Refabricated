@@ -1,0 +1,31 @@
+{
+	"schemaVersion": 1,
+	"id": "ageingspawners",
+	"version": "${version}",
+	"name": "Ageing Spawners Refabricated",
+	"description": "Spawners that break after X amount of mob spawns",
+	"authors": [
+		"break08"
+	],
+	"contact": {
+		"homepage": "https://www.curseforge.com/minecraft/mc-mods/ageing-spawners-refabricated//",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/ageingspawners/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.mrbysco.ageingspawners.AgeingSpawnersRefabricated"
+		]
+	},
+	"mixins": [
+		"ageingspawners.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
