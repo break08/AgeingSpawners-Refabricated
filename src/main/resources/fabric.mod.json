@@ -9,19 +9,20 @@
 	],
 	"contact": {
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/ageing-spawners-refabricated//",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/break08/AgeingSpawners-Refabricated"
 	},
 	"license": "MIT",
 	"icon": "assets/ageingspawners/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.mrbysco.ageingspawners.AgeingSpawnersRefabricated"
+          "com.mrbysco.ageingspawners.AgeingSpawners"
 		]
 	},
 	"mixins": [
 		"ageingspawners.mixins.json"
 	],
+	"accessWidener" : "ageingspawners.classtweaker",
 	"depends": {
 		"fabricloader": ">=0.20.1",
 		"minecraft": "~1.20.1",
