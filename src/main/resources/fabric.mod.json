@@ -25,7 +25,7 @@
 	"accessWidener" : "ageingspawners.classtweaker",
 	"depends": {
 		"fabricloader": ">=0.20.1",
-		"minecraft": "~1.20.1",
+		"minecraft": ">=1.21.1",
 		"java": ">=17",
 		"fabric-api": "*",
 		"forgeconfigapiport": "*"
