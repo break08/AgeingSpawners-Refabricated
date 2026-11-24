@@ -2,7 +2,7 @@ package com.mrbysco.ageingspawners.config;
 
 import com.mrbysco.ageingspawners.AgeingSpawners;
 import com.mrbysco.ageingspawners.util.AgeingHelper;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
+import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -87,7 +87,7 @@ public class SpawnerConfig {
 
 
     public static void onLoad() {
-        NeoForgeModConfigEvents.loading(MOD_ID).register(config -> {
+        ModConfigEvents.loading(MOD_ID).register(config -> {
             AgeingSpawners.LOGGER.debug("Loaded Ageing Spawners' config file {}", config.getFileName());
             AgeingHelper.blacklistCache.clear();
             AgeingHelper.whitelistCache.clear();
@@ -96,7 +96,7 @@ public class SpawnerConfig {
 
 
     public static void onFileChange() {
-        NeoForgeModConfigEvents.reloading(MOD_ID).register(config -> {
+        ModConfigEvents.reloading(MOD_ID).register(config -> {
             AgeingSpawners.LOGGER.warn("Ageing Spawners' config just got changed on the file system!");
             AgeingHelper.blacklistCache.clear();
             AgeingHelper.whitelistCache.clear();

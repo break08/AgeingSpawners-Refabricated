@@ -1,0 +1,4 @@
+{
+  "ageingspawners.ageing_spawners": "Ageing Spawners",
+  "gamerule.ageingspawners.ageing_spawners": "Spawners that break after X amount of mob spawns, this gamerule won't work until you configure Ageing Spawners Mod by the ageingspawners-common.toml file"
+}

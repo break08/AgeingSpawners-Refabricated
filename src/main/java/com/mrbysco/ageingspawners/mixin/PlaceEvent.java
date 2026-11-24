@@ -2,7 +2,7 @@ package com.mrbysco.ageingspawners.mixin;
 
 import com.mrbysco.ageingspawners.util.AgeingWorldData;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
@@ -25,7 +25,7 @@ public class PlaceEvent {
                 blockItem.getBlock() == Blocks.SPAWNER && blockPlaceContext.getPlayer() != null) {
             BlockPos pos = blockPlaceContext.getClickedPos();
             ServerLevel serverLevel = serverLevelAccessor.getLevel();
-            ResourceLocation dimensionLocation = serverLevel.dimension().location();
+            Identifier dimensionLocation = serverLevel.dimension().identifier();
             AgeingWorldData worldData = AgeingWorldData.get(serverLevel);
             Map<BlockPos, AgeingWorldData.SpawnerInfo> locationMap = worldData.getMapFromWorld(dimensionLocation);
             AgeingWorldData.SpawnerInfo info = locationMap.getOrDefault(pos, new AgeingWorldData.SpawnerInfo(0, true));

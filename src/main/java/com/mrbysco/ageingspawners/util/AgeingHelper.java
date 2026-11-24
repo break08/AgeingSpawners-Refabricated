@@ -1,7 +1,7 @@
 package com.mrbysco.ageingspawners.util;
 
 import com.mrbysco.ageingspawners.config.SpawnerConfig;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
@@ -13,14 +13,14 @@ public class AgeingHelper {
     public static final Map<String, Boolean> blacklistCache = new HashMap<>();
     public static final Map<String, Boolean> whitelistCache = new HashMap<>();
 
-    public static boolean blacklistContains(ResourceLocation registryName) {
+    public static boolean blacklistContains(Identifier registryName) {
         return blacklistCache.computeIfAbsent(registryName.toString(), (value) -> {
             List<? extends String> blacklist = SpawnerConfig.COMMON.blacklist.get();
             return blacklist.contains(value);
         });
     }
 
-    public static boolean whitelistContains(ResourceLocation registryName) {
+    public static boolean whitelistContains(Identifier registryName) {
         return whitelistCache.computeIfAbsent(registryName.toString(), (value) -> {
             List<? extends String> whitelist = SpawnerConfig.COMMON.whitelist.get();
             List<String> whitelistList = whitelist.stream().map(info -> {
@@ -39,13 +39,13 @@ public class AgeingHelper {
         });
     }
 
-    public static int getMaxSpawnCount(ResourceLocation registryName) {
+    public static int getMaxSpawnCount(Identifier registryName) {
         List<? extends String> whitelist = SpawnerConfig.COMMON.whitelist.get();
         for (String info : whitelist) {
             if (!info.isEmpty()) {
                 if (info.contains(";")) {
                     String[] infoArray = info.split(";");
-                    if (infoArray.length > 1 && ResourceLocation.parse(infoArray[0]).equals(registryName)) {
+                    if (infoArray.length > 1 && Identifier.parse(infoArray[0]).equals(registryName)) {
                         return NumberUtils.toInt(infoArray[1]);
                     }
                 }

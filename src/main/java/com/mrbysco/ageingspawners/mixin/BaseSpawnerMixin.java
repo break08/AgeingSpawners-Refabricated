@@ -4,12 +4,11 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mrbysco.ageingspawners.AgeingSpawners;
 import com.mrbysco.ageingspawners.accessor.SpawnerBEAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -47,15 +46,15 @@ public class BaseSpawnerMixin implements SpawnerBEAccess {
             method = "serverTick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/Mob;finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)Lnet/minecraft/world/entity/SpawnGroupData;"
+                    target = "Lnet/minecraft/world/entity/Mob;finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;Lnet/minecraft/world/entity/EntitySpawnReason;Lnet/minecraft/world/entity/SpawnGroupData;)Lnet/minecraft/world/entity/SpawnGroupData;"
             )
     )
-    private SpawnGroupData onSpawn(Mob mob, ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, SpawnGroupData spawnGroupData, Operation<SpawnGroupData> original) {
+    private SpawnGroupData onSpawn(Mob mob, ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, EntitySpawnReason entitySpawnReason, SpawnGroupData spawnGroupData, Operation<SpawnGroupData> original) {
         BaseSpawner spawner = (BaseSpawner) (Object) this;
         ServerLevel serverLevel = serverLevelAccessor.getLevel();
-        if (serverLevel.getGameRules().getBoolean(AgeingSpawners.AGE_SPAWNERS_RULE)) {
+        if (serverLevel.getGameRules().get(AgeingSpawners.AGE_SPAWNERS_RULE)) {
             handleSpawner(serverLevel, spawner, mob);
         }
-        return original.call(mob, serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData);
+        return original.call(mob, serverLevelAccessor, difficultyInstance, entitySpawnReason, spawnGroupData);
     }
 }

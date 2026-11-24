@@ -8,7 +8,7 @@ import com.mrbysco.ageingspawners.util.AgeingWorldData.SpawnerInfo;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BaseSpawner;
@@ -25,21 +25,21 @@ public class AgeHandler {
         breakEvent();
     }
     public static void handleSpawner(Level level, BaseSpawner spawner, Entity entity) {
-        ResourceLocation registryName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
+        Identifier registryName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         switch (SpawnerConfig.COMMON.spawnerMode.get()) {
             case BLACKLIST -> handleBlacklist(level, spawner, registryName);
             case WHITELIST -> handleWhitelist(level, spawner, registryName);
         }
     }
 
-    public static void handleBlacklist(Level level, BaseSpawner spawner, ResourceLocation registryName) {
+    public static void handleBlacklist(Level level, BaseSpawner spawner, Identifier registryName) {
         if (!AgeingHelper.blacklistContains(registryName)) {
             ageTheSpawner(level, spawner, SpawnerConfig.COMMON.blacklistMaxSpawnCount.get());
         } else {
             BlockEntity be = ((SpawnerBEAccess) spawner).getSpawnerBlockEntity();
             if (be != null) {
                 BlockPos pos = be.getBlockPos();
-                ResourceLocation dimensionLocation = level.dimension().location();
+                Identifier dimensionLocation = level.dimension().identifier();
                 AgeingWorldData worldData = AgeingWorldData.get(level);
                 Map<BlockPos, SpawnerInfo> locationMap = worldData.getMapFromWorld(dimensionLocation);
                 locationMap.remove(pos);
@@ -49,7 +49,7 @@ public class AgeHandler {
         }
     }
 
-    public static void handleWhitelist(Level level, BaseSpawner spawner, ResourceLocation registryName) {
+    public static void handleWhitelist(Level level, BaseSpawner spawner, Identifier registryName) {
         if (AgeingHelper.whitelistContains(registryName)) {
             int maxSpawnCount = AgeingHelper.getMaxSpawnCount(registryName);
             ageTheSpawner(level, spawner, maxSpawnCount);
@@ -57,7 +57,7 @@ public class AgeHandler {
             BlockEntity be = ((SpawnerBEAccess) spawner).getSpawnerBlockEntity();
             if (be != null) {
                 BlockPos pos = be.getBlockPos();
-                ResourceLocation dimensionLocation = level.dimension().location();
+                Identifier dimensionLocation = level.dimension().identifier();
                 AgeingWorldData worldData = AgeingWorldData.get(level);
                 Map<BlockPos, SpawnerInfo> locationMap = worldData.getMapFromWorld(dimensionLocation);
                 locationMap.remove(pos);
@@ -71,7 +71,7 @@ public class AgeHandler {
         BlockEntity be = ((SpawnerBEAccess) spawner).getSpawnerBlockEntity();
         if (be != null) {
             BlockPos pos = be.getBlockPos();
-            ResourceLocation dimensionLocation = level.dimension().location();
+            Identifier dimensionLocation = level.dimension().identifier();
             AgeingWorldData worldData = AgeingWorldData.get(level);
             Map<BlockPos, SpawnerInfo> locationMap = worldData.getMapFromWorld(dimensionLocation);
 
@@ -99,7 +99,7 @@ public class AgeHandler {
         PlayerBlockBreakEvents.BEFORE.register((world, player, _pos, state, blockEntity) -> {
             if (!world.isClientSide() && world instanceof ServerLevelAccessor serverLevelAccessor) {
                 ServerLevel serverLevel = serverLevelAccessor.getLevel();
-                ResourceLocation dimensionLocation = serverLevel.dimension().location();
+                Identifier dimensionLocation = serverLevel.dimension().identifier();
                 AgeingWorldData worldData = AgeingWorldData.get(serverLevel);
                 Map<BlockPos, SpawnerInfo> locationMap = worldData.getMapFromWorld(dimensionLocation);
                 locationMap.remove(_pos);
