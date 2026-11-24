@@ -2,12 +2,8 @@ package com.mrbysco.ageingspawners.config;
 
 import com.mrbysco.ageingspawners.AgeingSpawners;
 import com.mrbysco.ageingspawners.util.AgeingHelper;
-import fuzs.forgeconfigapiport.api.config.v2.ModConfigEvents;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
-import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
-import net.minecraftforge.common.ForgeConfigSpec.EnumValue;
-import net.minecraftforge.common.ForgeConfigSpec.IntValue;
+import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collections;
@@ -22,17 +18,17 @@ public class SpawnerConfig {
     }
 
     public static class Common {
-        public final EnumValue<EnumAgeingMode> spawnerMode;
-        public final BooleanValue playerPlacedOnly;
+        public final ModConfigSpec.EnumValue<EnumAgeingMode> spawnerMode;
+        public final ModConfigSpec.BooleanValue playerPlacedOnly;
 
-        public final IntValue whitelistMaxSpawnCount;
-        public final ConfigValue<List<? extends String>> whitelist;
+        public final ModConfigSpec.IntValue whitelistMaxSpawnCount;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> whitelist;
 
-        public final IntValue blacklistMaxSpawnCount;
-        public final ConfigValue<List<? extends String>> blacklist;
+        public final ModConfigSpec.IntValue blacklistMaxSpawnCount;
+        public final ModConfigSpec.ConfigValue<List<? extends String>> blacklist;
 
 
-        Common(ForgeConfigSpec.Builder builder) {
+        Common(ModConfigSpec.Builder builder) {
             builder.comment("General settings")
                     .push("General");
 
@@ -75,11 +71,11 @@ public class SpawnerConfig {
         }
     }
 
-    public static final ForgeConfigSpec commonSpec;
+    public static final ModConfigSpec commonSpec;
     public static final Common COMMON;
 
     static {
-        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        final Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
         commonSpec = specPair.getRight();
         COMMON = specPair.getLeft();
     }
@@ -91,7 +87,7 @@ public class SpawnerConfig {
 
 
     public static void onLoad() {
-        ModConfigEvents.loading(MOD_ID).register(config -> {
+        NeoForgeModConfigEvents.loading(MOD_ID).register(config -> {
             AgeingSpawners.LOGGER.debug("Loaded Ageing Spawners' config file {}", config.getFileName());
             AgeingHelper.blacklistCache.clear();
             AgeingHelper.whitelistCache.clear();
@@ -100,7 +96,7 @@ public class SpawnerConfig {
 
 
     public static void onFileChange() {
-        ModConfigEvents.reloading(MOD_ID).register(config -> {
+        NeoForgeModConfigEvents.reloading(MOD_ID).register(config -> {
             AgeingSpawners.LOGGER.warn("Ageing Spawners' config just got changed on the file system!");
             AgeingHelper.blacklistCache.clear();
             AgeingHelper.whitelistCache.clear();

@@ -45,7 +45,7 @@ public class AgeingHelper {
             if (!info.isEmpty()) {
                 if (info.contains(";")) {
                     String[] infoArray = info.split(";");
-                    if (infoArray.length > 1 && new ResourceLocation(infoArray[0]).equals(registryName)) {
+                    if (infoArray.length > 1 && ResourceLocation.parse(infoArray[0]).equals(registryName)) {
                         return NumberUtils.toInt(infoArray[1]);
                     }
                 }

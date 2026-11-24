@@ -47,17 +47,15 @@ public class BaseSpawnerMixin implements SpawnerBEAccess {
             method = "serverTick",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/Mob;finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;Lnet/minecraft/nbt/CompoundTag;)Lnet/minecraft/world/entity/SpawnGroupData;"
+                    target = "Lnet/minecraft/world/entity/Mob;finalizeSpawn(Lnet/minecraft/world/level/ServerLevelAccessor;Lnet/minecraft/world/DifficultyInstance;Lnet/minecraft/world/entity/MobSpawnType;Lnet/minecraft/world/entity/SpawnGroupData;)Lnet/minecraft/world/entity/SpawnGroupData;"
             )
     )
-    private SpawnGroupData onSpawn(Mob mob, ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance,
-                                   MobSpawnType mobSpawnType, SpawnGroupData spawnGroupData, CompoundTag compoundTag,
-                                   Operation<SpawnGroupData> original) {
+    private SpawnGroupData onSpawn(Mob mob, ServerLevelAccessor serverLevelAccessor, DifficultyInstance difficultyInstance, MobSpawnType mobSpawnType, SpawnGroupData spawnGroupData, Operation<SpawnGroupData> original) {
         BaseSpawner spawner = (BaseSpawner) (Object) this;
         ServerLevel serverLevel = serverLevelAccessor.getLevel();
         if (serverLevel.getGameRules().getBoolean(AgeingSpawners.AGE_SPAWNERS_RULE)) {
             handleSpawner(serverLevel, spawner, mob);
         }
-        return original.call(mob, serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData, compoundTag);
+        return original.call(mob, serverLevelAccessor, difficultyInstance, mobSpawnType, spawnGroupData);
     }
 }

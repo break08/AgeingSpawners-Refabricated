@@ -2,6 +2,7 @@ package com.mrbysco.ageingspawners.util;
 
 import com.mrbysco.ageingspawners.AgeingSpawners;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -10,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +32,7 @@ public class AgeingWorldData extends SavedData {
         this(new HashMap<>());
     }
 
-    public static AgeingWorldData load(CompoundTag compound) {
+    public static AgeingWorldData load(CompoundTag compound, HolderLookup.Provider provider) {
         Map<ResourceLocation, Map<BlockPos, SpawnerInfo>> map = new HashMap<>();
         for (String nbtName : compound.getAllKeys()) {
             ListTag dimensionNBTList = new ListTag();
@@ -56,14 +58,14 @@ public class AgeingWorldData extends SavedData {
                         posMap.put(blockPos, new SpawnerInfo(amount, playerPlaced));
                     }
                 }
-                map.put(new ResourceLocation(nbtName), posMap);
+                map.put(ResourceLocation.parse(nbtName), posMap);
             }
         }
         return new AgeingWorldData(map);
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    public @NotNull CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
         for (Map.Entry<ResourceLocation, Map<BlockPos, SpawnerInfo>> dimensionEntry : worldSpawnerMap.entrySet()) {
             ResourceLocation dimensionLocation = dimensionEntry.getKey();
             Map<BlockPos, SpawnerInfo> savedPositions = dimensionEntry.getValue();
@@ -95,9 +97,13 @@ public class AgeingWorldData extends SavedData {
             throw new RuntimeException("Attempted to get the data from a client world. This is wrong.");
         }
         ServerLevel overworld = level.getServer().getLevel(Level.OVERWORLD);
-
         DimensionDataStorage storage = overworld.getDataStorage();
-        return storage.computeIfAbsent(AgeingWorldData::load, AgeingWorldData::new, DATA_NAME);
+        SavedData.Factory<AgeingWorldData> factory = new SavedData.Factory<AgeingWorldData>(
+                AgeingWorldData::new,
+                AgeingWorldData::load,
+                null
+        );
+        return storage.computeIfAbsent(factory, DATA_NAME);
     }
 
     public record SpawnerInfo(Integer spawnCount, boolean playerPlaced) {
