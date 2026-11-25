@@ -26,6 +26,7 @@ public class AgeHandler {
         breakEvent();
     }
     public static void handleSpawner(Level level, Either<BlockEntity, Entity> spawner, Entity entity) {
+        if (spawner == null) return;
         Identifier registryName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         switch (SpawnerConfig.COMMON.spawnerMode.get()) {
             case BLACKLIST -> handleBlacklist(level, spawner, registryName);
@@ -37,7 +38,7 @@ public class AgeHandler {
         if (!AgeingHelper.blacklistContains(registryName)) {
             ageTheSpawner(level, spawner, SpawnerConfig.COMMON.blacklistMaxSpawnCount.get());
         } else {
-            BlockEntity be = ((SpawnerBEAccess) spawner).getSpawnerBlockEntity();
+            BlockEntity be = spawner.left().orElse(null);
             if (be != null) {
                 BlockPos pos = be.getBlockPos();
                 Identifier dimensionLocation = level.dimension().identifier();
@@ -55,7 +56,7 @@ public class AgeHandler {
             int maxSpawnCount = AgeingHelper.getMaxSpawnCount(registryName);
             ageTheSpawner(level, spawner, maxSpawnCount);
         } else {
-            BlockEntity be = ((SpawnerBEAccess) spawner).getSpawnerBlockEntity();
+            BlockEntity be = spawner.left().orElse(null);
             if (be != null) {
                 BlockPos pos = be.getBlockPos();
                 Identifier dimensionLocation = level.dimension().identifier();

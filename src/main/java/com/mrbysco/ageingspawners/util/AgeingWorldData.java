@@ -30,15 +30,16 @@ public class AgeingWorldData extends SavedData {
 
     public AgeingWorldData(Map<Identifier, Map<BlockPos, SpawnerInfo>> map) {
         this.worldSpawnerMap.clear();
-        this.worldSpawnerMap.putAll(map);
+        map.forEach((dim, posMap) -> this.worldSpawnerMap.put(dim, new HashMap<>(posMap)));
     }
+
 
     public AgeingWorldData() {
         this(new HashMap<>());
     }
 
     public Map<BlockPos, SpawnerInfo> getMapFromWorld(Identifier dimensionLocation) {
-        return worldSpawnerMap.getOrDefault(dimensionLocation, new HashMap<>());
+        return worldSpawnerMap.computeIfAbsent(dimensionLocation, k -> new HashMap<>());
     }
 
     public void setMapForWorld(Identifier dimensionLocation, Map<BlockPos, SpawnerInfo> spawnerInfoList) {
