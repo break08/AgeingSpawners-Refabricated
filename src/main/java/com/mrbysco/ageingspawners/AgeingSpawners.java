@@ -41,7 +41,7 @@ public class AgeingSpawners implements ModInitializer {
 		AgeHandler.registerAllEvents();
 	}
 
-	public static Identifier id(String path) {
+	public static Identifier modLoc(String path) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, path);
 	}
 }
