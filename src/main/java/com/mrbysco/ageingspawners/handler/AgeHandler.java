@@ -1,5 +1,6 @@
 package com.mrbysco.ageingspawners.handler;
 
+import com.mojang.datafixers.util.Either;
 import com.mrbysco.ageingspawners.accessor.SpawnerBEAccess;
 import com.mrbysco.ageingspawners.config.SpawnerConfig;
 import com.mrbysco.ageingspawners.util.AgeingHelper;
@@ -24,7 +25,7 @@ public class AgeHandler {
     public static void registerAllEvents(){
         breakEvent();
     }
-    public static void handleSpawner(Level level, BaseSpawner spawner, Entity entity) {
+    public static void handleSpawner(Level level, Either<BlockEntity, Entity> spawner, Entity entity) {
         Identifier registryName = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         switch (SpawnerConfig.COMMON.spawnerMode.get()) {
             case BLACKLIST -> handleBlacklist(level, spawner, registryName);
@@ -32,7 +33,7 @@ public class AgeHandler {
         }
     }
 
-    public static void handleBlacklist(Level level, BaseSpawner spawner, Identifier registryName) {
+    public static void handleBlacklist(Level level, Either<BlockEntity, Entity> spawner, Identifier registryName) {
         if (!AgeingHelper.blacklistContains(registryName)) {
             ageTheSpawner(level, spawner, SpawnerConfig.COMMON.blacklistMaxSpawnCount.get());
         } else {
@@ -49,7 +50,7 @@ public class AgeHandler {
         }
     }
 
-    public static void handleWhitelist(Level level, BaseSpawner spawner, Identifier registryName) {
+    public static void handleWhitelist(Level level, Either<BlockEntity, Entity> spawner, Identifier registryName) {
         if (AgeingHelper.whitelistContains(registryName)) {
             int maxSpawnCount = AgeingHelper.getMaxSpawnCount(registryName);
             ageTheSpawner(level, spawner, maxSpawnCount);
@@ -67,10 +68,9 @@ public class AgeHandler {
         }
     }
 
-    public static void ageTheSpawner(Level level, BaseSpawner spawner, int maxCount) {
-        BlockEntity be = ((SpawnerBEAccess) spawner).getSpawnerBlockEntity();
-        if (be != null) {
-            BlockPos pos = be.getBlockPos();
+    public static void ageTheSpawner(Level level, Either<BlockEntity, Entity> spawner, int maxCount) {
+        if (spawner.left().isPresent()) {
+            BlockPos pos = spawner.left().orElseThrow().getBlockPos();
             Identifier dimensionLocation = level.dimension().identifier();
             AgeingWorldData worldData = AgeingWorldData.get(level);
             Map<BlockPos, SpawnerInfo> locationMap = worldData.getMapFromWorld(dimensionLocation);
@@ -108,5 +108,14 @@ public class AgeHandler {
             }
             return true;
         });
+    }
+    public static Either<BlockEntity, Entity> toEither(BaseSpawner spawner) {
+        if (spawner instanceof SpawnerBEAccess be) {
+            BlockEntity blockEntity = be.getSpawnerBlockEntity();
+            if (blockEntity != null) {
+                return Either.left(blockEntity);
+            }
+        }
+        return null;
     }
 }
